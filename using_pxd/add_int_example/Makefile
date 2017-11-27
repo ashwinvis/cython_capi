@@ -8,3 +8,4 @@ clean:
 build:
 	gcc -c add_int.c -o add_int.o
 	python setup.py
+	pythran add_int.py
