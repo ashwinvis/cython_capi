@@ -10,7 +10,14 @@ class TestAll(unittest.TestCase):
         a = 1
         b = 2
         ans = a + b
-        ans2 = add2.add2(a, b, add_int.__pyx_capi__['add'])
+        ans2 = add2.add2_int(a, b, add_int.__pyx_capi__['add'])
+        np.testing.assert_equal(ans, ans2)
+
+    def test_pythran_int(self):
+        a = 1
+        b = 2
+        ans = a + b
+        ans2 = add2.add2_int(a, b, add2.add_int)
         np.testing.assert_equal(ans, ans2)
 
     def test_pythran(self):
