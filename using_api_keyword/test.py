@@ -32,8 +32,9 @@ class TestAll(unittest.TestCase):
         a = np.ones((3, 3))
         b = a * 3
         ans = a + b
+        ans2 = add.add(a, b)
         # ans2 = add2.add2(a, b, add.__pyx_capi__['add'])
-        # np.testing.assert_equal(ans, ans2)
+        np.testing.assert_equal(ans, ans2)
 
 
 if __name__ == '__main__':
