@@ -15,7 +15,7 @@ clean: _cleanso _cleanc _cleanh
 build:
 	python setup_add.py
 	python setup_add_int.py
-	pythran add2.py -v
+	pythran add_pythran.py -v
 
 test:
 	python test.py

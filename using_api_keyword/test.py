@@ -2,39 +2,41 @@ import unittest
 import numpy as np
 import add
 import add_int
-import add2
+import add_pythran
 
 
-class TestAll(unittest.TestCase):
-    def test_int(self):
-        a = 1
-        b = 2
-        ans = a + b
-        ans2 = add2.add2_int(a, b, add_int.__pyx_capi__['add'])
-        np.testing.assert_equal(ans, ans2)
+class TestAddInt(unittest.TestCase):
+    def setUp(self):
+        self.a = 1
+        self.b = 2
+        self.ans = self.a + self.b
+    
+    def test_pythran(self):
+        ans2 = add_pythran.add_int(self.a, self.b, add_pythran.add_int_capsule)
+        np.testing.assert_equal(ans2, self.ans)
 
-    def test_pythran_int(self):
-        a = 1
-        b = 2
-        ans = a + b
-        ans2 = add2.add2_int(a, b, add2.add_int)
-        np.testing.assert_equal(ans, ans2)
+    def test_pythran_cython(self):
+        ans2 = add_pythran.add_int(self.a, self.b, add_int.__pyx_capi__['add'])
+        np.testing.assert_equal(ans2, self.ans)
+
+
+class TestAddArray(unittest.TestCase):
+    def setUp(self):
+        self.a = np.ones((3, 3))
+        self.b = self.a * 3
+        self.ans = self.a + self.b
 
     def test_pythran(self):
-        a = np.ones((3, 3))
-        b = a * 3
-        ans = a + b
-        ans2 = add2.add2(a, b, add2.add)
-        np.testing.assert_equal(ans, ans2)
+        ans2 = add_pythran.add(self.a, self.b, add_pythran.add_capsule)
+        np.testing.assert_equal(ans2, self.ans)
 
-    def test_ndarray(self):
+    def test_cython(self):
+        ans2 = add.add(self.a, self.b)
+        np.testing.assert_equal(ans2, self.ans)
+
+    def test_pythran_cython(self):
         """Results in segfault"""
-        a = np.ones((3, 3))
-        b = a * 3
-        ans = a + b
-        ans2 = add.add(a, b)
-        # ans2 = add2.add2(a, b, add.__pyx_capi__['add'])
-        np.testing.assert_equal(ans, ans2)
+        # ans2 = add_pythran.add(a, b, add.__pyx_capi__['add'])
 
 
 if __name__ == '__main__':
