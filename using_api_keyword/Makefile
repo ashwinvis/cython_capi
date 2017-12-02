@@ -9,7 +9,7 @@ _cleanh:
 _cleanc:
 	rm *.c
 
-clean: _cleanso _cleanc _cleanh
+clean: _cleanc _cleanh _cleanso
 	rm -rf build
 
 build:
