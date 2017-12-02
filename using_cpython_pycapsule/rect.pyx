@@ -31,6 +31,7 @@ cdef class PyRectangle:
         self.__capi__ = dict(
             get_area=PyCapsule_New(<void *>self.get_area, 'int (int)', NULL),
             twice=PyCapsule_New(<void *>self.twice, 'int (int)', NULL),
+            twice_c=PyCapsule_New(<void *>self.twice_cy, 'int (int)', NULL),
             twice_static=PyCapsule_New(<void *>self.twice_static, 'int (int)', NULL)
         )
         return self.__capi__
@@ -39,7 +40,10 @@ cdef class PyRectangle:
         c = c * 2
         return self.c_rect.getArea()
 
-    cdef int twice(self, int c):
+    cpdef int twice(self, int c):
+        return c * 2
+
+    cdef int twice_cy(self, int c):
         return c * 2
 
     @staticmethod
