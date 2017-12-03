@@ -13,3 +13,5 @@ syntax: glob
 **/*.egg-info
 
 **/build/*
+
+using_cpython_pycapsule_class/twice.cpp
