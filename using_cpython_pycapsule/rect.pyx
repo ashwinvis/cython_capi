@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from cpython.pycapsule cimport PyCapsule_New
 
 
@@ -11,13 +13,9 @@ cdef extern from "Rectangle.h" namespace "shapes":
         void move(int, int)
 
 
-cdef int foo(int x):
-    return 2 * x
+cdef int twice_func(int c):
+    return 2*c
 
-
-cpdef get_capi():
-    cap = PyCapsule_New(<void *>foo, 'int (int)', NULL)
-    return cap
 
 
 cdef class PyRectangle:
@@ -32,14 +30,15 @@ cdef class PyRectangle:
 
     cpdef get_capi(self):
         return dict(
+            twice_func=PyCapsule_New(
+                <void *>twice_func, 'int (int)', NULL),
             get_area=PyCapsule_New(<void *>self.get_area, 'int (int)', NULL),
             twice=PyCapsule_New(<void *>self.twice, 'int (int)', NULL),
-            twice_c=PyCapsule_New(<void *>self.twice_cy, 'int (int)', NULL),
-            twice_static=PyCapsule_New(<void *>self.twice_static, 'int (int)', NULL)
-        )
+            twice_cy=PyCapsule_New(<void *>self.twice_cy, 'int (int)', NULL),
+            twice_static=PyCapsule_New(
+                <void *>self.twice_static, 'int (int)', NULL))
 
     cdef int get_area(self, int c):
-        c = c * 2
         return self.c_rect.getArea()
 
     cpdef int twice(self, int c):

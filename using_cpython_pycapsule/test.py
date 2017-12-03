@@ -6,20 +6,32 @@ except ImportError:
 
 import unittest
 import rect
+import rect_pythran
 
 
 class TestAll(unittest.TestCase):
     def setUp(self):
-        self.r  = rect.PyRectangle(1, 2, 3, 4)
-        self.capi = self.r.__pyx_capi__
+        self.rect = rect.PyRectangle(1, 2, 3, 4)
+        self.capi = self.rect.__pyx_capi__
 
     def test_pythran(self):
-        import rect_pythran
 
-        for k in reversed(list(self.capi)):
+        keys = list(reversed(sorted(list(self.capi.keys()))))
+        print(keys, '\n')
+        value = 41
+
+        for k in keys:
             print('function: ', k)
             capsule = self.capi[k]
-            print(rect_pythran.get_area(capsule, 41))
+            result = rect_pythran.get_area(capsule, value)
+
+            if k.startswith('twice'):
+                if result != 2*value:
+                    how = 'wrong'
+                else:
+                    how = 'good'
+
+                print(how, 'result for capsule', k, '\n')
 
 
 if __name__ == '__main__':
