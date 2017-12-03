@@ -10,13 +10,13 @@ class TestAddInt(unittest.TestCase):
         self.a = 1
         self.b = 2
         self.ans = self.a + self.b
-    
+
     def test_pythran(self):
-        ans2 = add_pythran.add_int(self.a, self.b, add_pythran.add_int_capsule)
+        ans2 = add_pythran.add(self.a, self.b, add_pythran.add_int_capsule)
         np.testing.assert_equal(ans2, self.ans)
 
     def test_pythran_cython(self):
-        ans2 = add_pythran.add_int(self.a, self.b, add_int.__pyx_capi__['add'])
+        ans2 = add_pythran.add(self.a, self.b, add_int.__pyx_capi__['add'])
         np.testing.assert_equal(ans2, self.ans)
 
 
@@ -36,7 +36,9 @@ class TestAddArray(unittest.TestCase):
 
     def test_pythran_cython(self):
         """Results in segfault"""
-        # ans2 = add_pythran.add(a, b, add.__pyx_capi__['add'])
+        print('line commented because of segfault')
+        # ans2 = add_pythran.add(self.a, self.b, add.__pyx_capi__['add'])
+        # np.testing.assert_equal(ans2, self.ans)
 
 
 if __name__ == '__main__':

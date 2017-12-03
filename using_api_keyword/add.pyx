@@ -5,7 +5,8 @@ DTYPE = np.float64
 ctypedef np.float64_t DTYPE_t
 
 
-cpdef api np.ndarray[DTYPE_t, ndim=2] add(np.ndarray[DTYPE_t, ndim=2] f, np.ndarray[DTYPE_t, ndim=2] g):
+cpdef api np.ndarray[DTYPE_t, ndim=2] add(
+        np.ndarray[DTYPE_t, ndim=2] f, np.ndarray[DTYPE_t, ndim=2] g):
     cdef int i, j
     cdef int imax = f.shape[0]
     cdef int jmax = f.shape[1]

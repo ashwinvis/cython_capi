@@ -1,0 +1,15 @@
+syntax: glob
+
+*.pyd*
+*.pyc
+*~
+*tmp
+
+\#*\#
+
+*.so
+*.o
+
+**/*.egg-info
+
+**/build/*
