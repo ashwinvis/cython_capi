@@ -22,19 +22,21 @@ cpdef get_capi():
 
 cdef class PyRectangle:
     cdef Rectangle c_rect      # hold a C++ instance which we're wrapping
-    cdef dict __capi__
+    cdef public dict __pyx_capi__
 
     def __cinit__(self, int x0, int y0, int x1, int y1):
         self.c_rect = Rectangle(x0, y0, x1, y1)
 
+    def __init__(self, int x0, int y0, int x1, int y1):
+        self.__pyx_capi__ = self.get_capi()
+
     cpdef get_capi(self):
-        self.__capi__ = dict(
+        return dict(
             get_area=PyCapsule_New(<void *>self.get_area, 'int (int)', NULL),
             twice=PyCapsule_New(<void *>self.twice, 'int (int)', NULL),
             twice_c=PyCapsule_New(<void *>self.twice_cy, 'int (int)', NULL),
             twice_static=PyCapsule_New(<void *>self.twice_static, 'int (int)', NULL)
         )
-        return self.__capi__
 
     cdef int get_area(self, int c):
         c = c * 2

@@ -4,12 +4,12 @@ _cleanso:
 	rm *.so
 
 clean: _cleanso
-	rm rect.cpp rect.h
 	rm -rf build
+	rm rect.cpp rect.h
 
 build:
 	python setup.py build_ext -i
 	pythran -v rect_pythran.py
 
 test:
-	python test.py
+	python -Wall test.py
