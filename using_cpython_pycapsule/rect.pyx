@@ -21,6 +21,7 @@ cdef int twice_func(int c):
 cdef class PyRectangle:
     cdef Rectangle c_rect      # hold a C++ instance which we're wrapping
     cdef public dict __pyx_capi__
+    cdef public int myint
 
     def __cinit__(self, int x0, int y0, int x1, int y1):
         self.c_rect = Rectangle(x0, y0, x1, y1)
@@ -35,6 +36,8 @@ cdef class PyRectangle:
             get_area=PyCapsule_New(<void *>self.get_area, 'int (int)', NULL),
             twice=PyCapsule_New(<void *>self.twice, 'int (int)', NULL),
             twice_cy=PyCapsule_New(<void *>self.twice_cy, 'int (int)', NULL),
+            twice_myint=PyCapsule_New(
+                <void *>self.twice_myint, 'int (int)', NULL),
             twice_static=PyCapsule_New(
                 <void *>self.twice_static, 'int (int)', NULL))
 
@@ -46,6 +49,10 @@ cdef class PyRectangle:
 
     cdef int twice_cy(self, int c):
         return c * 2
+
+    cpdef int twice_myint(self, int c):
+        self.myint = c
+        return self.myint * 2
 
     @staticmethod
     cdef int twice_static(int c):
