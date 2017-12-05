@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 try:
     import faulthandler
     faulthandler.enable()
@@ -29,7 +31,7 @@ class TestAll(unittest.TestCase):
                 else:
                     how = 'good'
 
-                print(how, f'result ({result})\n')
+                print(how, 'result ({})\n'.format(result))
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 
 build:
 	python setup.py build_ext -i
-	pythran -v rect_pythran.py
+	pythran -v call_capsule_pythran.py
 
 _cleanso:
 	rm -f *.so
