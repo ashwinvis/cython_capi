@@ -12,7 +12,10 @@ from call_capsule_pythran import call_capsule
 
 class TestAll(unittest.TestCase):
     def setUp(self):
-        self.rect = PyRectangle(1, 2, 3, 4)
+        self.rect_x = 12
+        self.rect_y = 14
+
+        self.rect = PyRectangle(0, 0, self.rect_x, self.rect_y)
         self.capi = self.rect.__pyx_capi__
 
     def test_pythran(self):
@@ -35,7 +38,8 @@ class TestAll(unittest.TestCase):
                 print(how, 'result for capsule', k, '\n')
 
             if k.startswith('get_area'):
-                print('result for get_area', result)
+                print('result for get_area =', result, 'should be',
+                      self.rect_x * self.rect_y)
 
 
 if __name__ == '__main__':
