@@ -13,9 +13,24 @@ cdef extern from "Rectangle.h" namespace "shapes":
         void move(int, int)
 
 
+ctypedef int(*f_ptr_type)(int)
+
+cdef make_PyCapsule(f_ptr_type f, string):
+    return PyCapsule_New(
+                <void *>f, string, NULL)
+
+_func_cache = []
+
+cdef f_ptr_type py_to_fptr(f):
+    import ctypes
+    functype = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)
+    ctypes_f = functype(f)
+    _func_cache.append(ctypes_f) # ensure references are kept
+    return (<f_ptr_type*><size_t>ctypes.addressof(ctypes_f))[0]
+
+
 cdef int twice_func(int c):
     return 2*c
-
 
 
 cdef class PyRectangle:
@@ -27,28 +42,25 @@ cdef class PyRectangle:
         self.c_rect = Rectangle(x0, y0, x1, y1)
 
     def __init__(self, int x0, int y0, int x1, int y1):
-        self.__pyx_capi__ = self.get_capi()
+        self.__pyx_capi__ = {
+            'twice_func': make_PyCapsule(twice_func, b'int (int)'),
+            'twice_static': make_PyCapsule(self.twice_static, b'int (int)'),
+            'twice_cpdef': make_PyCapsule(
+                py_to_fptr(self.twice_cpdef), b'int (int)'),
+            'get_area': make_PyCapsule(
+                py_to_fptr(self.get_area), b'int (int)'),
+            'twice_myint': make_PyCapsule(
+                py_to_fptr(self.twice_myint), b'int (int)'),
+        }
 
-    cpdef get_capi(self):
-        return dict(
-            twice_func=PyCapsule_New(
-                <void *>twice_func, 'int (int)', NULL),
-            get_area=PyCapsule_New(<void *>self.get_area, 'int (int)', NULL),
-            twice=PyCapsule_New(<void *>self.twice, 'int (int)', NULL),
-            twice_cy=PyCapsule_New(<void *>self.twice_cy, 'int (int)', NULL),
-            twice_myint=PyCapsule_New(
-                <void *>self.twice_myint, 'int (int)', NULL),
-            twice_static=PyCapsule_New(
-                <void *>self.twice_static, 'int (int)', NULL))
-
-    cdef int get_area(self, int c):
+    # warning: cpdef is important here...
+    cpdef int get_area(self, int c):
+        print('in get_area', self)
         return self.c_rect.getArea()
 
-    cpdef int twice(self, int c):
-        return c * 2
-
-    cdef int twice_cy(self, int c):
-        return c * 2
+    # warning: cpdef is important here...
+    cpdef int twice_cpdef(self, int c):
+        return 2*c
 
     cpdef int twice_myint(self, int c):
         self.myint = c
@@ -56,7 +68,7 @@ cdef class PyRectangle:
 
     @staticmethod
     cdef int twice_static(int c):
-        return c * 2
+        return 2*c
 
     def get_size(self):
         cdef int width, height
