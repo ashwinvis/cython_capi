@@ -14,3 +14,5 @@ clean: _cleanso
 
 test:
 	python -Wall test.py
+
+all: clean build test

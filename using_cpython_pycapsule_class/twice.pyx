@@ -17,7 +17,7 @@ cdef f_ptr_type py_to_fptr(f):
     return (<f_ptr_type*><size_t>ctypes.addressof(ctypes_f))[0]
 
 
-cdef int twice_func(int c):
+cdef api int twice_func(int c):
     return 2*c
 
 
@@ -27,9 +27,10 @@ cdef class Twice:
     def __init__(self):
         self.__pyx_capi__ = {
             'twice_func': make_PyCapsule(twice_func, b'int (int)'),
-            'twice_static': make_PyCapsule(self.twice_static, b'int (int)'),
             'twice_cpdef': make_PyCapsule(
-                py_to_fptr(self.twice_cpdef), b'int (int)')}
+                py_to_fptr(self.twice_cpdef), b'int (int)'),
+            'twice_static': make_PyCapsule(self.twice_static, b'int (int)'),
+        }
 
     # warning: cpdef is important here...
     cpdef int twice_cpdef(self, int c):

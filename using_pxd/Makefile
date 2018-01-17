@@ -2,11 +2,11 @@
 
 _clean:
 	rm -rf build
-	rm myfunc.o
+	rm -f myfunc.o
 
-clean:
-	rm cy_myfunc.c
-	rm *.so
+clean: _clean
+	rm -f cy_myfunc.c
+	rm -f *.so
 
 _compile:
 	gcc -c myfunc.c -o myfunc.o
@@ -19,8 +19,8 @@ test:
 	python test.py
 
 clean_pkg: _clean
-	rm cy_myfunc.c
-	rm pkg/*.so
+	rm -f cy_myfunc.c
+	rm -f pkg/*.so
 	rm -rf pkg.egg-info
 
 build_pkg: _compile
@@ -31,8 +31,8 @@ test_pkg:
 	python test_pkg.py
 
 clean_pkg_inplace: _clean
-	rm pkg_inplace/cy_myfunc.c
-	rm pkg_inplace/*.so
+	rm -f pkg_inplace/cy_myfunc.c
+	rm -f pkg_inplace/*.so
 	rm -rf pkg_inplace.egg-info
 
 build_pkg_inplace: _compile
